@@ -1,4 +1,4 @@
-# YBUtools
+# 延大助手盒子
 
 一个延大学生自己的App
 
@@ -19,7 +19,7 @@
     <img src="app/src/main/res/mipmap-xxxhdpi/ic_ybu.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">YBUtools</h3>
+  <h3 align="center">延大助手盒子【暂定名】</h3>
   <p align="center">
     一个延大学生自己的App
     <br />
