@@ -98,7 +98,7 @@ git clone https://github.com/eventhorizonsky/YBUtools.git
 
 ### 开发的架构 
 
-请阅读[ARCHITECTURE.md](https://github.com/eventhorizonsky/YBUtools/blob/master/ARCHITECTURE.md) 查阅为该项目的架构。
+
 
 ### 部署
 
