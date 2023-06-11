@@ -159,4 +159,4 @@ eventhorizonsky@gmail.com
 [license-shield]: https://img.shields.io/github/license/eventhorizonsky/YBUtools.svg?style=flat-square
 [license-url]: https://github.com/eventhorizonsky/YBUtools/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/shaojintian
+[linkedin-url]:https://www.ezsky.xyz/
