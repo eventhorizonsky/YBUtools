@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">延大助手盒子</string>
+    <string name="home">首页</string>
+    <string name="list">列表</string>
+    <string name="mine">我的</string>
+    <string name="app">应用</string>
+    <string name="ybujwxt">延边大学教务系统</string>
+    <string name="ybuvpn">延边大学vpn</string>
+    <string name="ybuxfb">延边大学学付宝</string>
+    <string name="ybuweb">延边大学校园网</string>
+    <string name="theme">主题</string>
+    <string name="theme_default">默认</string>
+    <string name="theme_greenapple">青苹果</string>
+    <string name="theme_midnightdusk">午夜幽暗</string>
+    <string name="theme_strawberry">草莓巧克力</string>
+    <string name="theme_tako">薰衣草</string>
+    <string name="theme_tealturqoise">浪潮</string>
+    <string name="dark_auto">跟随系统</string>
+    <string name="dark_off">白天模式</string>
+    <string name="dark_on">夜间模式</string>
+    <string name="setting">设置</string>
+    <string name="dark_set">夜间设置</string>
+</resources>
