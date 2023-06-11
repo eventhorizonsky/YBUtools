@@ -75,7 +75,7 @@ git clone https://github.com/eventhorizonsky/YBUtools.git
 - [ ] 教务系统
   - [x] 登录登出
   - [ ] 查询课表
-  - [ ] 查询个人信息
+  - [x] 查询个人信息
   - [x] 查询成绩
   - [ ] 查询考试安排
   - [ ] 抢课
