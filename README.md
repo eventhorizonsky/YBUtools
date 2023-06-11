@@ -34,7 +34,7 @@
   </p>
 
 
-</p>
+
 
  基于Compose的延大学生app，目前在初步开发中
 
@@ -63,7 +63,7 @@
 2. Jvm 1.8
 3. compose_version   '1.2.0'
 
-###### **安装步骤**
+###### 安装步骤
 
 Clone the repo
 
