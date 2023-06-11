@@ -98,7 +98,7 @@ git clone https://github.com/eventhorizonsky/YBUtools.git
 
 ### 开发的架构 
 
-请阅读[ARCHITECTURE.md](https://github.com/shaojintian/Best_README_template/blob/master/ARCHITECTURE.md) 查阅为该项目的架构。
+请阅读[ARCHITECTURE.md](https://github.com/eventhorizonsky/YBUtools/blob/master/ARCHITECTURE.md) 查阅为该项目的架构。
 
 ### 部署
 
@@ -146,3 +146,17 @@ eventhorizonsky@gmail.com
 
 - [okkv2](https://github.com/heyanLE/okkv2)
 - [EasyBangumi](https://github.com/easybangumiorg/EasyBangumi)
+<!-- links -->
+[your-project-path]:eventhorizonsky/YBUtools
+[contributors-shield]: https://img.shields.io/github/contributors/eventhorizonsky/YBUtools.svg?style=flat-square
+[contributors-url]: https://github.com/eventhorizonsky/YBUtools/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/eventhorizonsky/YBUtools.svg?style=flat-square
+[forks-url]: https://github.com/eventhorizonsky/YBUtools/network/members
+[stars-shield]: https://img.shields.io/github/stars/eventhorizonsky/YBUtools.svg?style=flat-square
+[stars-url]: https://github.com/eventhorizonsky/YBUtools/stargazers
+[issues-shield]: https://img.shields.io/github/issues/eventhorizonsky/YBUtools.svg?style=flat-square
+[issues-url]: https://img.shields.io/github/issues/eventhorizonsky/YBUtools.svg
+[license-shield]: https://img.shields.io/github/license/eventhorizonsky/YBUtools.svg?style=flat-square
+[license-url]: https://github.com/eventhorizonsky/YBUtools/blob/master/LICENSE.txt
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
+[linkedin-url]: https://linkedin.com/in/shaojintian
