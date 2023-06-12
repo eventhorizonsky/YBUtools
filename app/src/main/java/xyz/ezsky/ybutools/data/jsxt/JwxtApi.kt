@@ -18,9 +18,12 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 import retrofit2.http.Streaming
 import xyz.ezsky.ybutools.data.DatabaseProvider
+import xyz.ezsky.ybutools.data.jsxt.entity.Exams
 import xyz.ezsky.ybutools.data.jsxt.entity.Grades
 import xyz.ezsky.ybutools.data.jsxt.entity.Student
 import xyz.ezsky.ybutools.data.jsxt.tools.Base64Utils
+import xyz.ezsky.ybutools.data.jsxt.tools.Parser
+import xyz.ezsky.ybutools.data.jsxt.tools.QzBrParser
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -45,9 +48,21 @@ interface RequestService {
     fun getGradesList(
 
     ): Call<ResponseBody>
+    @GET(value="/jsxsd/xsks/xsksap_list")
+    fun getExamsList(
+
+    ): Call<ResponseBody>
     @GET(value="/jsxsd/grxx/xsxx")
     fun getStudentInfo(
 
+    ): Call<ResponseBody>
+    @GET(value="/jsxsd/framework/xsMain_new.jsp?t1=1")
+    fun getweekInfo(
+
+    ): Call<ResponseBody>
+    @GET(value = "/jsxsd/xskb/xskb_list.do")
+    fun getCourse(
+        @Query("xnxq01id") xnxq01id: String = ""
     ): Call<ResponseBody>
     @GET(value="/jsxsd/grxx/xszpLoad")
     @Streaming
@@ -219,6 +234,46 @@ class JwxtNetwork {
             }
 
         }
+        fun getweek(): Result<Boolean>{
+            //进行登录操作
+            try {
+                logInjwxt(jwxtusernameOkkv, jwxtpasswordOkkv)
+                val call = service.getweekInfo()
+                val response = call.execute()
+
+                if (response.isSuccessful) {
+                    // 解析 HTML 数据
+                    val html = response.body()?.string()
+                    val doc = Jsoup.parse(html)
+                    // 提取所有类似于 "xxxx-xxxx-x" 的学年学期字符串
+                    val pattern = Regex("""\d{4}-\d{4}-\d""")
+                    val yearSemesterList = doc.select("select[name=xnxq01id] option")
+                        .map { it.text() }
+                        .filter { pattern.matches(it) }
+
+                    // 获取被选中的字符串
+                    val selectedYearSemester = doc.select("select[name=xnxq01id] option[selected=selected]")
+                        .first()
+                        ?.text()
+
+                    // 获取第16周的数字
+                    val weekText = doc.select("#li_showWeek .main_text").first()?.text()
+                    val weekNumber = weekText?.replace("第", "")?.replace("周", "")?.toIntOrNull()
+                    var xnxqlistokkv by okkv("jwxt_xnxqlist","")
+                    var weekokkv by okkv("jwxt_week","")
+                    var xnxq by okkv("jwxt_xnxq","")
+                    val gson=Gson()
+                    xnxqlistokkv=gson.toJson(yearSemesterList)
+                    weekokkv= weekNumber.toString()
+                    xnxq=selectedYearSemester?:"2022-2023-1"
+                    return Result.success(true)
+                } else {
+                    val errorCode = response.code()
+                    return Result.failure(IOException("获取失败$errorCode"))
+                }  }catch (e: IOException){
+                return Result.failure(IOException(e))
+            }
+        }
         /**
          * 获取学生信息
          */
@@ -259,6 +314,39 @@ class JwxtNetwork {
                 return Result.failure(IOException(e))
             }
 
+        }
+        fun getmycourse(xnxqid:String): Result<Boolean>{
+            try {
+                logInjwxt(jwxtusernameOkkv, jwxtpasswordOkkv)
+                val call = service.getCourse(xnxq01id =xnxqid )
+                val response = call.execute()
+                if (response.isSuccessful) {
+                    // 解析 HTML 数据
+                    val html = response.body()?.string()
+                    var coursedata=html?.let { QzBrParser(it) }?.getCourse()
+                    if(coursedata!=null){ Log.e("text",coursedata.base.toString()+coursedata.detail.toString())
+                        val gson = Gson()
+                        var coursebaseokkv by okkv("jwxt_coursebase","")
+                        coursebaseokkv=gson.toJson(coursedata.base)
+                        var coursedetailokkv by okkv("jwxt_coursedetail","")
+                        coursedetailokkv=gson.toJson(coursedata.detail)
+                        return Result.success(true)
+
+                    }else{
+                        val errorCode = response.code()
+                        return Result.failure(IOException("获取失败$errorCode"))
+                        }
+
+
+
+                } else {
+                    val errorCode = response.code()
+                    return Result.failure(IOException("获取失败$errorCode"))
+                }
+
+            }catch (e: IOException){
+                return Result.failure(IOException(e))
+            }
         }
         //获取成绩和总分
         suspend fun getgrades(context: Context): Result<Boolean>{
@@ -310,6 +398,52 @@ class JwxtNetwork {
                         gradeDao.insertGrades(grades)
                     }
                     return Result.success(true)
+                } else {
+                    val errorCode = response.code()
+                    return Result.failure(IOException("获取失败$errorCode"))
+                }
+
+            }catch (e: IOException){
+                return Result.failure(IOException(e))
+            }
+        }
+        fun getexams(): Result<List<Exams>>{
+            try {
+                logInjwxt(jwxtusernameOkkv, jwxtpasswordOkkv)
+                val call = service.getExamsList()
+                val response = call.execute()
+                if (response.isSuccessful) {
+                    // 解析 HTML 数据
+                    val html = response.body()?.string()
+                    val document = Jsoup.parse(html)
+                    val table = document.select("table")[0]
+                    val rows = table.select("tr")
+
+                    // 遍历表格数据并创建学生列表
+                    val examsList = mutableListOf<Exams>()
+                    for (i in 1 until rows.size) {
+                        val row =rows.get(i)
+                        val cells = row.select("td")
+                        if (cells.size>1) {
+                            val id = cells[0].text()
+                            val campus = cells[1].text()
+                            val examSession = cells[2].text()
+                            val courseCode = cells[3].text()
+                            val courseName = cells[4].text()
+                            val teacher = cells[5].text()
+                            val examMode = cells[6].text()
+                            val examTime = cells[7].text()
+                            val examRoom = cells[8].text()
+                            val seatNumber = cells[9].text()
+                            val admissionTicket = cells[10].text()
+                            val note = cells[11].text()
+
+                            examsList.add(Exams(id,campus, examSession, courseCode, courseName, teacher, examMode, examTime, examRoom, seatNumber, admissionTicket, note))
+                        }
+                    }
+                    if(examsList.isEmpty()){examsList.add(Exams("","","","","暂无考试安排","","","","","","",""))}
+                    Log.e("test",examsList.toString())
+                    return Result.success(examsList)
                 } else {
                     val errorCode = response.code()
                     return Result.failure(IOException("获取失败$errorCode"))

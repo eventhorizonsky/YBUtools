@@ -40,6 +40,7 @@ import xyz.ezsky.ybutools.data.DatabaseProvider
 import xyz.ezsky.ybutools.data.jsxt.JwxtNetwork.Companion.fetchImageAndCache
 import xyz.ezsky.ybutools.data.jsxt.JwxtNetwork.Companion.getStudentInfo
 import xyz.ezsky.ybutools.data.jsxt.JwxtNetwork.Companion.getgrades
+import xyz.ezsky.ybutools.data.jsxt.JwxtNetwork.Companion.getmycourse
 import xyz.ezsky.ybutools.data.jsxt.JwxtNetwork.Companion.loadImageFromCache
 import xyz.ezsky.ybutools.data.jsxt.JwxtNetwork.Companion.logout
 import xyz.ezsky.ybutools.data.jsxt.entity.Grades
@@ -155,6 +156,7 @@ fun JwxtHome(navController: NavController) {
                 withContext(Dispatchers.IO) {
                     try {
                         isLoading = true
+
                         if (gradeDao.getGradesCount() <= 0) {
                             fetchImageAndCache(context)
                             getgrades(context)
@@ -299,7 +301,7 @@ fun JwxtHome(navController: NavController) {
 
                         Row(
                             modifier = Modifier
-                                .padding(8.dp,16.dp)
+                                .padding(8.dp, 16.dp)
                                 .fillMaxWidth(1f),
                             horizontalArrangement = Arrangement.Center
                         ) {
@@ -379,6 +381,16 @@ fun JwxtHome(navController: NavController) {
                     }
 
 
+                }
+                item{
+                    Button(onClick = {navController.navigate("CourseSchedule")}) {
+                       Text(text = " 查看课表")
+                    }
+                }
+                item{
+                    Button(onClick = {navController.navigate("Examlist")}) {
+                        Text(text = " 查看考试安排")
+                    }
                 }
                item{
                    TabRow(selectedTabIndex = 0) {
