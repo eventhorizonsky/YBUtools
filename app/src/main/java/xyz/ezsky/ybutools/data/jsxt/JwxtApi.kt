@@ -48,7 +48,7 @@ interface RequestService {
     fun getGradesList(
 
     ): Call<ResponseBody>
-    @GET(value="/jsxsd/xsks/xsksap_list")
+    @GET(value="/jsxsd/xsks/xsksap_list?xnxqid=2022-2023-2")
     fun getExamsList(
 
     ): Call<ResponseBody>

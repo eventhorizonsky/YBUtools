@@ -1,5 +1,6 @@
 package xyz.ezsky.ybutools.ui.jwxtapp
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
@@ -39,7 +40,20 @@ fun Examlist(navController: NavController){
             leadingContent = {
                 Text(text = item.id)
             },
-            trailingContent = { Text(text = item.courseName) }
+            trailingContent = {
+                Column {
+                    Text(text = item.teacher)
+                    Text(text = item.examTime)
+                    Text(text = item.examRoom)
+                    Text(text = item.courseCode)
+                    Text(text = item.examSession)
+                    Text(text = item.examMode)
+                    Text(text = item.campus)
+                    Text(text = item.seatNumber)
+                    Text(text = item.admissionTicket)
+                    Text(text = item.note)
+                }
+            }
         )
         Divider()
     }

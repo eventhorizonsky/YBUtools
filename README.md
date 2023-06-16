@@ -79,6 +79,10 @@ git clone https://github.com/eventhorizonsky/YBUtools.git
   - [x] 查询成绩
   - [ ] 查询考试安排
   - [ ] 抢课
+- [ ] 信息门户
+  - [x] 登录授权
+  - [x] 获取信息列表
+  - [ ] 使用各种服务
 - [ ] 延大VPN
   - [ ] 登录
   - [ ] 通过延大VPN访问教务系统
