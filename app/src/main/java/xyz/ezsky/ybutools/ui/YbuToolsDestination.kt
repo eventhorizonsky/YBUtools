@@ -54,7 +54,7 @@ object App : YBUDestination {
     override val screen: @Composable (NavController) -> Unit = { param -> AppScreen(param) }
 }
 
-val rallyTabRowScreens = listOf(Home, List,App, Mine)
+val rallyTabRowScreens = listOf(Home,App,List,Mine)
 class YBUDestinationSaver : Saver<YBUDestination, Bundle> {
     override fun restore(value: Bundle): YBUDestination {
         val route = value.getString("route") ?: error("Missing route")

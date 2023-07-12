@@ -46,6 +46,7 @@ import xyz.ezsky.ybutools.data.jsxt.JwxtNetwork.Companion.logout
 import xyz.ezsky.ybutools.data.jsxt.entity.Grades
 import xyz.ezsky.ybutools.data.jsxt.entity.Gradesinfo
 import xyz.ezsky.ybutools.data.jsxt.entity.Student
+import xyz.ezsky.ybutools.ui.mainpage.screen.LocalAppContext
 import xyz.ezsky.ybutools.ui.mainpage.screen.YBUjwxt
 import xyz.ezsky.ybutools.ui.toolcompose.ErrorDialog
 
@@ -57,6 +58,9 @@ import xyz.ezsky.ybutools.ui.toolcompose.ErrorDialog
 @Composable
 fun JwxtHome(navController: NavController) {
     var isError by remember { mutableStateOf(false) }
+    var jwxtusernameOkkv by okkv("jwxt_username", "")
+    var islogin = jwxtusernameOkkv != ""
+    val current = LocalAppContext.current
     var isLoading by remember { mutableStateOf(false) }
     var errortext by rememberSaveable { mutableStateOf("") }
     var grades by remember { mutableStateOf<List<Grades>>(emptyList()) }
@@ -151,6 +155,7 @@ fun JwxtHome(navController: NavController) {
 
         )
     }) { innerPadding ->
+        if(islogin){
         LaunchedEffect(Unit) {
             coroutineScope.launch {
                 withContext(Dispatchers.IO) {
@@ -420,6 +425,18 @@ fun JwxtHome(navController: NavController) {
                 )
             }
         }
+    }else{
+       ErrorDialog(errorMessage = "尚未登录") {
+           navController.popBackStack()
+           navController.navigate(
+               "loginpage?appserverID=${YBUjwxt.appID}&appServerName=${
+                   current.getString(
+                       YBUjwxt.title
+                   )
+               }&approuter=${YBUjwxt.router}"
+           )
+       }
+    }
     }
 
 

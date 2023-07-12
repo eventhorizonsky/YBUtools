@@ -16,6 +16,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
 import xyz.ezsky.ybutools.data.jsxt.entity.ArtListData
+import xyz.ezsky.ybutools.data.jsxt.entity.Row
 import xyz.ezsky.ybutools.data.jsxt.tools.AESHelper
 
 import java.io.IOException
@@ -118,7 +119,7 @@ class XxmhNetwork {
         private var jwxtusernameOkkv by okkv("jwxt_username","")
         private var jwxtpasswordOkkv by okkv("jwxt_password","")
         @RequiresApi(Build.VERSION_CODES.O)
-        fun getartlist(LMDM:String,pageSize:Int,pageNumber: Int):Result<ArtListData>{
+        fun getartlist(LMDM:String,pageSize:Int,pageNumber: Int):Result<List<Row>>{
 
             try {
                 login()
@@ -136,7 +137,7 @@ class XxmhNetwork {
                         val gson = Gson()
                         val result=gson.fromJson(html, ArtListData::class.java)
 
-                        return Result.success(result)
+                        return Result.success(result.datas.cxlmxdggxx.rows)
                     }
                     else{
                         return Result.failure(IOException("发生错误"))

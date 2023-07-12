@@ -21,17 +21,18 @@ import xyz.ezsky.ybutools.data.DatabaseProvider
 import xyz.ezsky.ybutools.data.jsxt.entity.Exams
 import xyz.ezsky.ybutools.data.jsxt.entity.Grades
 import xyz.ezsky.ybutools.data.jsxt.entity.Student
-import xyz.ezsky.ybutools.data.jsxt.tools.Base64Utils
-import xyz.ezsky.ybutools.data.jsxt.tools.Parser
-import xyz.ezsky.ybutools.data.jsxt.tools.QzBrParser
+import xyz.ezsky.ybutools.data.jsxt.tools.*
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
 import java.net.URLEncoder
+import java.time.DayOfWeek
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAdjusters
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -234,6 +235,8 @@ class JwxtNetwork {
             }
 
         }
+
+        @RequiresApi(Build.VERSION_CODES.O)
         fun getweek(): Result<Boolean>{
             //进行登录操作
             try {
@@ -260,11 +263,12 @@ class JwxtNetwork {
                     val weekText = doc.select("#li_showWeek .main_text").first()?.text()
                     val weekNumber = weekText?.replace("第", "")?.replace("周", "")?.toIntOrNull()
                     var xnxqlistokkv by okkv("jwxt_xnxqlist","")
-                    var weekokkv by okkv("jwxt_week","")
+                    var weekokkv by okkv("jwxt_week","2020-1-1")
                     var xnxq by okkv("jwxt_xnxq","")
                     val gson=Gson()
+                    val firstMonday = getFirstMondayOfFirstWeek(weekNumber?:3)
                     xnxqlistokkv=gson.toJson(yearSemesterList)
-                    weekokkv= weekNumber.toString()
+                    weekokkv= localDateToString(firstMonday)
                     xnxq=selectedYearSemester?:"2022-2023-1"
                     return Result.success(true)
                 } else {
@@ -324,7 +328,7 @@ class JwxtNetwork {
                     // 解析 HTML 数据
                     val html = response.body()?.string()
                     var coursedata=html?.let { QzBrParser(it) }?.getCourse()
-                    if(coursedata!=null){ Log.e("text",coursedata.base.toString()+coursedata.detail.toString())
+                    if(coursedata!=null){
                         val gson = Gson()
                         var coursebaseokkv by okkv("jwxt_coursebase","")
                         coursebaseokkv=gson.toJson(coursedata.base)
@@ -442,7 +446,7 @@ class JwxtNetwork {
                         }
                     }
                     if(examsList.isEmpty()){examsList.add(Exams("","","","","暂无考试安排","","","","","","",""))}
-                    Log.e("test",examsList.toString())
+
                     return Result.success(examsList)
                 } else {
                     val errorCode = response.code()
