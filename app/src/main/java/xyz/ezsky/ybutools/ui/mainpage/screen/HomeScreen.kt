@@ -102,7 +102,7 @@ fun HomeScreen(navController: NavController) {
                         navController.navigate("CourseSchedule")
                     },
                     app(Icons.Filled.DateRange, "考试安排") { navController.navigate("Examlist") },
-                    app(Icons.Filled.DateRange, "登录网络") { navController.navigate("JwxtHome") },
+                    app(Icons.Filled.DateRange, "登录网络") { navController.navigate("Developing") },
                     app(Icons.Filled.DateRange, "教务系统") { navController.navigate("JwxtHome") },
                 )
                 applist.forEach {
@@ -132,133 +132,137 @@ fun HomeScreen(navController: NavController) {
                             }&approuter=${YBUjwxt.router}"
                         )
                     }) {
-                        Text(text = "前往教务系统登录获取信息")
+                        Text(text = "前往教务系统登录获取今日课表")
                     }
-                }
+                }else{todaycourse()}
             }
         }
-        item{
-            Column(Modifier
-                .padding(20.dp)) {
-                val coroutineScope = rememberCoroutineScope()
-                var coursedetail by remember { mutableStateOf(arrayListOf<CourseDetailBean>()) }
-                var coursebase by remember { mutableStateOf(arrayListOf<CourseBaseBean>()) }
-                var jwxtusernameOkkv by okkv("jwxt_username", "")
-                var islogin = jwxtusernameOkkv != ""
-                var coursebaseokkv by okkv("jwxt_coursebase", "")
-                var coursedetailokkv by okkv("jwxt_coursedetail", "")
-                var xnxq by remember { mutableStateOf("") }
-                var week by remember { mutableStateOf(0) }
-                var xnxqlist by mutableStateOf<List<String>>(emptyList())
-                if(week==0){
-                    var weekokkv by okkv("jwxt_week", "2023-07-03")
-                    val currentDate = LocalDate.now()
-                    week = calculateWeekNumber(stringToLocalDate(weekokkv), currentDate)
-                }
-                var pagerState = rememberPagerState(18,week-1)
-                fun initdate() {
-                    coroutineScope.launch {
-                        withContext(Dispatchers.IO) {
-                            try {
-                                isLoading = true
-                                JwxtNetwork.getweek()
-                                var xnxqokkv by okkv("jwxt_xnxq", "")
-                                var weekokkv by okkv("jwxt_week", "2023-07-03")
-                                xnxq=xnxqokkv
-                                val currentDate = LocalDate.now()
-                                week = calculateWeekNumber(stringToLocalDate(weekokkv), currentDate)
-                                pagerState.scrollToPage(week-1)
-                                JwxtNetwork.getmycourse(xnxqokkv).getOrNull()
-                                isLoading = false
 
-                            } catch (e: Exception) {
-                                // 处理异常
-                            }
-                        }
-                    }
-                }
-                if (xnxq == "") {
-                    var xnxqokkv by okkv("jwxt_xnxq", "")
-                    xnxq = xnxqokkv
-                }
-                if (xnxqlist.isEmpty()) {
-                    var xnxqlistokkv by okkv("jwxt_xnxqlist", "")
-                    val gson = Gson()
-                    val xnxqListType = object : TypeToken<List<String>>() {}.type
-                    if (xnxqlistokkv != "") {
-                        xnxqlist = gson.fromJson(xnxqlistokkv, xnxqListType)
-                    } else {
-                        initdate()
-                    }
-
-                }
-                fun getCourse() {
-                    coroutineScope.launch {
-                        withContext(Dispatchers.IO) {
-                            try {
-
-                                JwxtNetwork.getmycourse(xnxq).getOrNull()
-
-                            } catch (e: Exception) {
-                                // 处理异常
-                            }
-                        }
-                    }
-                }
-                if (coursedetailokkv == "" || coursebaseokkv == "") {
-                    LaunchedEffect(Unit) {
-                        getCourse()
-                    }
-                } else {
-                    val gson = Gson()
-                    val courseDetailListType = object : TypeToken<List<CourseDetailBean>>() {}.type
-                    coursedetail = gson.fromJson(coursedetailokkv, courseDetailListType)
-                    val courseBaseListType = object : TypeToken<List<CourseBaseBean>>() {}.type
-                    coursebase = gson.fromJson(coursebaseokkv, courseBaseListType)
-                    coursedetail.forEach { item ->
-                        if (item.day == 7) {
-                            item.day = 0
-                        }
-
-                    }
-                }
-
-                LaunchedEffect(xnxq) {
-                    if (islogin) {
-                        getCourse()
-                    }
-
-                }
-                val context = LocalContext.current
-                val calendar = Calendar.getInstance()
-                val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
-
-                // 将星期天（Calendar.SUNDAY）的值由1映射为7
-                val weekday = if (dayOfWeek == Calendar.SUNDAY) 7 else dayOfWeek - 1
-                val cellData =
-                    coursedetail.filter {it.day == weekday-1 && it.startWeek <= week && week <= it.endWeek }
-                Text(text = "今日课表", fontWeight = FontWeight.Bold)
-                if (cellData != null) {
-                    cellData.forEach{item->
-                        val coursetime=when(item.startNode/2+1){
-                            1 -> "08:00-09:35"
-                            2 -> "09:55-11:30"
-                            3 -> "13:00-14:35"
-                            4 -> "14:55-16:30"
-                            5 ->  "17:30-19:05"
-                            6 -> "19:25-21:00"
-
-                            else -> {""}
-                        }
-                        coursecell(data = coursebase.find { it.id == item.id },item,coursetime)}
-
-                }
-
-            }
-        }
 
     }
 
+
+}
+@OptIn(ExperimentalPagerApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun todaycourse(){
+
+        Column(Modifier
+            .padding(20.dp)) {
+            val coroutineScope = rememberCoroutineScope()
+            var coursedetail by remember { mutableStateOf(arrayListOf<CourseDetailBean>()) }
+            var coursebase by remember { mutableStateOf(arrayListOf<CourseBaseBean>()) }
+            var jwxtusernameOkkv by okkv("jwxt_username", "")
+            var islogin = jwxtusernameOkkv != ""
+            var coursebaseokkv by okkv("jwxt_coursebase", "")
+            var coursedetailokkv by okkv("jwxt_coursedetail", "")
+            var xnxq by remember { mutableStateOf("") }
+            var week by remember { mutableStateOf(0) }
+            var xnxqlist by mutableStateOf<List<String>>(emptyList())
+            if(week==0){
+                var weekokkv by okkv("jwxt_week", "2023-07-03")
+                val currentDate = LocalDate.now()
+                week = calculateWeekNumber(stringToLocalDate(weekokkv), currentDate)
+            }
+            var pagerState = rememberPagerState(18,week-1)
+            fun initdate() {
+                coroutineScope.launch {
+                    withContext(Dispatchers.IO) {
+                        try {
+                            JwxtNetwork.getweek()
+                            var xnxqokkv by okkv("jwxt_xnxq", "")
+                            var weekokkv by okkv("jwxt_week", "2023-07-03")
+                            xnxq=xnxqokkv
+                            val currentDate = LocalDate.now()
+                            week = calculateWeekNumber(stringToLocalDate(weekokkv), currentDate)
+                            pagerState.scrollToPage(week-1)
+                            JwxtNetwork.getmycourse(xnxqokkv).getOrNull()
+
+                        } catch (e: Exception) {
+                            // 处理异常
+                        }
+                    }
+                }
+            }
+            if (xnxq == "") {
+                var xnxqokkv by okkv("jwxt_xnxq", "")
+                xnxq = xnxqokkv
+            }
+            if (xnxqlist.isEmpty()) {
+                var xnxqlistokkv by okkv("jwxt_xnxqlist", "")
+                val gson = Gson()
+                val xnxqListType = object : TypeToken<List<String>>() {}.type
+                if (xnxqlistokkv != "") {
+                    xnxqlist = gson.fromJson(xnxqlistokkv, xnxqListType)
+                } else {
+                    initdate()
+                }
+
+            }
+            fun getCourse() {
+                coroutineScope.launch {
+                    withContext(Dispatchers.IO) {
+                        try {
+
+                            JwxtNetwork.getmycourse(xnxq).getOrNull()
+
+                        } catch (e: Exception) {
+                            // 处理异常
+                        }
+                    }
+                }
+            }
+            if (coursedetailokkv == "" || coursebaseokkv == "") {
+                LaunchedEffect(Unit) {
+                    getCourse()
+                }
+            } else {
+                val gson = Gson()
+                val courseDetailListType = object : TypeToken<List<CourseDetailBean>>() {}.type
+                coursedetail = gson.fromJson(coursedetailokkv, courseDetailListType)
+                val courseBaseListType = object : TypeToken<List<CourseBaseBean>>() {}.type
+                coursebase = gson.fromJson(coursebaseokkv, courseBaseListType)
+                coursedetail.forEach { item ->
+                    if (item.day == 7) {
+                        item.day = 0
+                    }
+
+                }
+            }
+
+            LaunchedEffect(xnxq) {
+                if (islogin) {
+                    getCourse()
+                }
+
+            }
+            val context = LocalContext.current
+            val calendar = Calendar.getInstance()
+            val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+
+            // 将星期天（Calendar.SUNDAY）的值由1映射为7
+            val weekday = if (dayOfWeek == Calendar.SUNDAY) 7 else dayOfWeek - 1
+            val cellData =
+                coursedetail.filter {it.day == weekday-1 && it.startWeek <= week && week <= it.endWeek }
+            Text(text = "今日课表", fontWeight = FontWeight.Bold)
+            if (cellData != null) {
+                cellData.forEach{item->
+                    val coursetime=when(item.startNode/2+1){
+                        1 -> "08:00-09:35"
+                        2 -> "09:55-11:30"
+                        3 -> "13:00-14:35"
+                        4 -> "14:55-16:30"
+                        5 ->  "17:30-19:05"
+                        6 -> "19:25-21:00"
+
+                        else -> {""}
+                    }
+                    coursecell(data = coursebase.find { it.id == item.id },item,coursetime)}
+
+            }
+
+        }
 
 }
 @Composable

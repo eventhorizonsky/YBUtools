@@ -17,6 +17,7 @@ import xyz.ezsky.ybutools.ui.jwxtapp.JwxtHome
 import xyz.ezsky.ybutools.ui.mainpage.loginpage
 import xyz.ezsky.ybutools.ui.mainpage.mainpage
 import xyz.ezsky.ybutools.ui.settingpage.setting
+import xyz.ezsky.ybutools.ui.toolcompose.developing
 import xyz.ezsky.ybutools.ui.xxmhpage.SeeArt
 
 /**
@@ -34,6 +35,7 @@ fun YBUapp() {
         composable("JwxtHome") { JwxtHome(navController) }
         composable("CourseSchedule") { CourseSchedule(navController) }
         composable("Examlist") { Examlist(navController) }
+        composable("Developing") { developing(navController) }
         composable("SeeArt?GGDM={GGDM}", arguments = listOf(
             navArgument("GGDM") {
             //表示传递的参数是String类型

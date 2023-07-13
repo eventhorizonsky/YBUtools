@@ -3,7 +3,7 @@
     <string name="home">首页</string>
     <string name="list">信息</string>
     <string name="mine">我的</string>
-    <string name="app">应用</string>
+    <string name="app">论坛</string>
     <string name="ybujwxt">延边大学教务系统</string>
     <string name="ybuxxmh">延边大学信息门户</string>
     <string name="ybuvpn">延边大学vpn</string>
@@ -22,4 +22,6 @@
     <string name="setting">设置</string>
     <string name="dark_set">夜间设置</string>
     <string name="courseschedule">课程表</string>
+    <string name="exam">考试安排</string>
+    <string name="developing">开发中</string>
 </resources>

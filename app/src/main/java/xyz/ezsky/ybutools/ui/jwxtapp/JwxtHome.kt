@@ -4,11 +4,14 @@ import android.graphics.Bitmap
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Dataset
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -48,7 +51,10 @@ import xyz.ezsky.ybutools.data.jsxt.entity.Gradesinfo
 import xyz.ezsky.ybutools.data.jsxt.entity.Student
 import xyz.ezsky.ybutools.ui.mainpage.screen.LocalAppContext
 import xyz.ezsky.ybutools.ui.mainpage.screen.YBUjwxt
+import xyz.ezsky.ybutools.ui.mainpage.screen.app
+import xyz.ezsky.ybutools.ui.mainpage.screen.appitem
 import xyz.ezsky.ybutools.ui.toolcompose.ErrorDialog
+import xyz.ezsky.ybutools.ui.toolcompose.gradeDialog
 
 /**
  * 【教务系统】主页面
@@ -61,6 +67,7 @@ fun JwxtHome(navController: NavController) {
     var jwxtusernameOkkv by okkv("jwxt_username", "")
     var islogin = jwxtusernameOkkv != ""
     val current = LocalAppContext.current
+    var gradedetail by remember { mutableStateOf<Grades>(Grades(0,"","","","","","","","","","","","","","")) }
     var isLoading by remember { mutableStateOf(false) }
     var errortext by rememberSaveable { mutableStateOf("") }
     var grades by remember { mutableStateOf<List<Grades>>(emptyList()) }
@@ -70,6 +77,7 @@ fun JwxtHome(navController: NavController) {
     val context = LocalContext.current
     val database = DatabaseProvider.getDatabase(context)
     val gradeDao = database.gradeDao()
+    var showDialog by remember { mutableStateOf(false) }
     val imageBitmap: MutableState<Bitmap?> = remember { mutableStateOf(null) }
     var studentinfo by remember { mutableStateOf(Student("", "", "", "", "", "", "", "", "")) }
     Scaffold(topBar = {
@@ -156,6 +164,9 @@ fun JwxtHome(navController: NavController) {
         )
     }) { innerPadding ->
         if(islogin){
+            if(showDialog){
+                gradeDialog(gradedetail) { showDialog = false }
+            }
         LaunchedEffect(Unit) {
             coroutineScope.launch {
                 withContext(Dispatchers.IO) {
@@ -388,15 +399,27 @@ fun JwxtHome(navController: NavController) {
 
                 }
                 item{
-                    Button(onClick = {navController.navigate("CourseSchedule")}) {
-                       Text(text = " 查看课表")
+                    Row(
+                        Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        val applist = listOf(
+                            app(Icons.Filled.Dataset, "我的课表") {
+                                navController.navigate("CourseSchedule")
+                            },
+                            app(Icons.Filled.DateRange, "考试安排") { navController.navigate("Examlist") },
+                            app(Icons.Filled.DateRange, "学分计算") { navController.navigate("Developing") },
+                            app(Icons.Filled.DateRange, "选课中心") { navController.navigate("Developing") },
+                        )
+                        applist.forEach {
+                            appitem(icon = it.appicon, text = it.appname) { it.action() }
+                        }
                     }
                 }
-                item{
-                    Button(onClick = {navController.navigate("Examlist")}) {
-                        Text(text = " 查看考试安排")
-                    }
-                }
+
                item{
                    TabRow(selectedTabIndex = 0) {
                        Tab(
@@ -407,16 +430,21 @@ fun JwxtHome(navController: NavController) {
 
                    }
                }
+
                 items(grades) { item ->
                     ListItem(
                         headlineContent = { Text(item.courseName) },
                         leadingContent = {
                             Text(text = item.listid)
                         },
-                        trailingContent = { Text(text = item.score) }
+                        trailingContent = { Text(text = item.score) },
+                        modifier = Modifier.clickable(onClick = {gradedetail=item;showDialog=true})
                     )
                     Divider()
+
                 }
+
+
             }
             if (isError) {
                 ErrorDialog(

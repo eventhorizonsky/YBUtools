@@ -389,10 +389,7 @@ class JwxtNetwork {
                         val row =rows.get(i)
                         val cells = row.select("td")
                         if (cells!=null) {
-                            val listid = cells[0].text()
-                            val courseName = cells[3].text()
-                            val score = cells[4].text()
-                            gradesList.add(Grades(listid=listid, courseName=courseName, score=score))
+                            gradesList.add(Grades(listid=cells[0].text(), kkxq = cells[1].text(), kcbh = cells[2].text(), courseName = cells[3].text(), score = cells[4].text(), tsyy =cells[5].text() , xf =cells[6].text() , zxs = cells[7].text(), jd = cells[8].text(), bcxq = cells[9].text(), khfs = cells[10].text(), ksxz =cells[11].text() , kcsx = cells[12].text(), kcxz =cells[13].text() ))
                         }
                     }
                     val database = DatabaseProvider.getDatabase(context)

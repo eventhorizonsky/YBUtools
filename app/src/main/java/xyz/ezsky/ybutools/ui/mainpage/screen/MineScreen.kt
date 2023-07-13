@@ -152,4 +152,4 @@ object YBUweb : Appitem {
     }
 }
 
-val appitems = listOf(YBUjwxt, YBUvpn, YBUxfb, YBUweb)
+val appitems = listOf(YBUjwxt)

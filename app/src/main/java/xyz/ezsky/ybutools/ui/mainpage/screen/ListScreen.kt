@@ -259,5 +259,5 @@ object bzfw : newstab {
 }
 
 val newstabs =
-    listOf(xxyw, bgtz, xndt, dzgk, xkjs, dqxx, rsxx, jwxx, kyxx, xtxx, jyxx, yjsxx, wsxx, bzfw)
+    listOf( jwxx,xxyw, bgtz, xndt, dzgk, xkjs, dqxx, rsxx, kyxx, xtxx, jyxx, yjsxx, wsxx, bzfw)
 
