@@ -74,10 +74,10 @@ git clone https://github.com/eventhorizonsky/YBUtools.git
 ### 开发计划
 - [ ] 教务系统
   - [x] 登录登出
-  - [ ] 查询课表
+  - [x] 查询课表
   - [x] 查询个人信息
   - [x] 查询成绩
-  - [ ] 查询考试安排
+  - [x] 查询考试安排
   - [ ] 抢课
 - [ ] 信息门户
   - [x] 登录授权
