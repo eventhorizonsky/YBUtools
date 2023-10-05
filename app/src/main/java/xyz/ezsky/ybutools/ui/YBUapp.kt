@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import xyz.ezsky.ybutools.ui.forumspage.readpost
 import xyz.ezsky.ybutools.ui.jwxtapp.CourseSchedule
 import xyz.ezsky.ybutools.ui.jwxtapp.Examlist
 import xyz.ezsky.ybutools.ui.jwxtapp.JwxtHome
@@ -36,6 +37,13 @@ fun YBUapp() {
         composable("CourseSchedule") { CourseSchedule(navController) }
         composable("Examlist") { Examlist(navController) }
         composable("Developing") { developing(navController) }
+        composable("readpost?id={postid}", arguments = listOf(
+            navArgument("postid") {
+                //表示传递的参数是String类型
+                type = NavType.StringType
+            })) {backStackEntry ->
+            val postid = backStackEntry.arguments?.getString("postid") ?: "1"
+            readpost(navController,postid) }
         composable("SeeArt?GGDM={GGDM}", arguments = listOf(
             navArgument("GGDM") {
             //表示传递的参数是String类型

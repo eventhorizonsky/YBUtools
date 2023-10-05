@@ -109,7 +109,7 @@ class XxmhNetwork {
             .client(client.build())
             .build()
         private var retrofit2: Retrofit = Retrofit.Builder()
-            .baseUrl("https://portal.ybu.edu.cn/")
+            .baseUrl("http://portal.ybu.edu.cn/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client.build())
             .build()
@@ -132,7 +132,6 @@ class XxmhNetwork {
 
                 if (response.isSuccessful) {
                     val html = response.body()?.string()
-                    Log.e("ess",call.request().url().toString())
                     if(html!=null){
                         val gson = Gson()
                         val result=gson.fromJson(html, ArtListData::class.java)
@@ -197,13 +196,10 @@ class XxmhNetwork {
 
             val call2 = service.loginAuth(formData =formData)
                 val response=call2.execute()
-                Log.e("ERRO",response.body()?.string()?:"")
+
                  val call3= service2.loginPortal()
                 val request = call3.execute()
-                if(request.isSuccessful){
-                    Log.e("ERRO",request.body()?.string()?:"")
-                }else{Log.e("ERRO",request.toString()?:"")}
-
+                Log.e("ERRO",request.body()?.string()?:"")
 
 
         } catch (e: IOException){

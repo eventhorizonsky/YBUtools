@@ -9,6 +9,5 @@ import androidx.navigation.NavController
  */
 @Composable
 fun AppScreen(navController: NavController){
-    Text("Appscreen")
-
+    Text("论坛尚在开发中")
 }

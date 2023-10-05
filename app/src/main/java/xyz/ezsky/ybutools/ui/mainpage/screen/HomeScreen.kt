@@ -69,7 +69,8 @@ import java.util.*
 fun HomeScreen(navController: NavController) {
     val bannerdata = BannerData(
         "https://www.ezsky.xyz/wp-content/uploads/2023/06/%E5%A3%81%E7%BA%B8-1536x864.jpg",
-        ""
+        "2"
+
     )
     val imageUrls = listOf(
         bannerdata, bannerdata, bannerdata
@@ -86,7 +87,7 @@ fun HomeScreen(navController: NavController) {
                     .height(200.dp)
                     .padding(10.dp)
                     .clip(MaterialTheme.shapes.medium)
-            ) { Banner(imageUrls, 30000) }
+            ) { Banner(imageUrls, 30000, onClick = {link ->  navController.navigate("readpost?id=$link")}) }
         }
 
         item {
