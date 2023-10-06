@@ -5,6 +5,7 @@ import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -13,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,7 +56,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     CompositionLocalProvider(LocalAppContext provides appContext) {
                         YBUapp()
-                        checkForUpdate(true){}
+                        checkForUpdate(true) {}
                     }
 
 
@@ -67,8 +69,10 @@ class MainActivity : ComponentActivity() {
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun checkForUpdate(checkNecessity: Boolean,
-                   onDismiss: () -> Unit) {
+fun checkForUpdate(
+    checkNecessity: Boolean,
+    onDismiss: () -> Unit
+) {
     var showDialog by remember { mutableStateOf(false) }
     var readDialog by remember { mutableStateOf(false) }
     var lastAppInfo by remember { mutableStateOf(YbuApp()) }
@@ -76,12 +80,12 @@ fun checkForUpdate(checkNecessity: Boolean,
     val context = LocalContext.current
     val currentAppVersion = getVersionName(context)
     if (showDialog) {
-        UpdateDialog(currentAppVersion,lastAppInfo) {
+        UpdateDialog(currentAppVersion, lastAppInfo) {
             showDialog = !showDialog
             onDismiss()
         }
     }
-    if(!readDialog){
+    if (!readDialog) {
         viewModelScope.launch(Dispatchers.IO) {
             val result = getlastapp()
             if (result.isSuccess) {
@@ -89,20 +93,25 @@ fun checkForUpdate(checkNecessity: Boolean,
                 Log.e("tag", latestAppVersion.toString())
                 Log.e("tag2", currentAppVersion)
                 if (!isLocalVersionGreaterThan(latestAppVersion as String, currentAppVersion)) {
-                    if(result.getOrNull()?.isMandatory.equals("Y")||!checkNecessity){
+                    if (result.getOrNull()?.isMandatory.equals("Y") || !checkNecessity) {
                         // 版本更新可用，显示更新弹窗
                         showDialog = true
                         readDialog = !readDialog
-                        lastAppInfo=result.getOrNull()?: YbuApp()
+                        lastAppInfo = result.getOrNull() ?: YbuApp()
                     }
                 } else {
-                    Log.e(
-                        "tag3",
-                        isLocalVersionGreaterThan(
-                            latestAppVersion as String,
-                            currentAppVersion
-                        ).toString()
-                    )
+                    if (!checkNecessity) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(
+                                context.applicationContext,
+                                "当前已是最新版",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        readDialog = !readDialog
+                        onDismiss()
+                    }
+
                 }
 
             } else {

@@ -76,16 +76,18 @@ fun setting(navController: NavController) {
 
 
 }
+
 @Composable
 fun VersionScreen() {
     val context = LocalContext.current
     val version = getVersionName(context)
     val githubUrl = "https://github.com/eventhorizonsky/YBUtools/releases"
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
+    val launcher =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
     var checkUpdate by remember { mutableStateOf(false) }
-    if(checkUpdate){
-        checkForUpdate(false){
-            checkUpdate=false
+    if (checkUpdate) {
+        checkForUpdate(false) {
+            checkUpdate = false
         }
     }
     LazyColumn {
@@ -93,14 +95,14 @@ fun VersionScreen() {
             ListItem(
                 modifier = Modifier
                     .clickable {
-                        checkUpdate=true
+                        checkUpdate = true
                     },
                 headlineContent = { },
                 leadingContent = {
-                    Text("版本号")
+                    Text("检查更新")
                 },
                 trailingContent = {
-                                    Text(version)
+                    Text("当前版本：$version")
                 },
 
                 )
